@@ -91,4 +91,8 @@ body, form, ul, table {
 
 /* This file is for your main application css. */
 
+.help-block {
+    color: red;
+}
+
 /*# sourceMappingURL=app.css.map*/
