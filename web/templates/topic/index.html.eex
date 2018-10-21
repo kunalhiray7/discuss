@@ -4,13 +4,21 @@
     <%= for topic <- @topics do %>
         <li class="collection-item">
             <%= topic.title %>
+            <div class="right">
+                <%= link to: topic_path(@conn, :edit, topic), class: "btn-floating btn-small center-align" do %>
+                    <i class="material-icons">edit</i>
+                <%= end %>
+                <%= link to: topic_path(@conn, :delete, topic), method: :delete, class: "btn-floating btn-small center-align red lighten-3" do %>
+                    <i class="material-icons">delete</i>
+                <%= end %>
+            </div>
         </li>
     <%= end %>
 
 </ul>
 
 <div class="fixed-action-btn">
-    <%= link to: topic_path(@conn, :new), class: "btn-floating btn-large waves-effect waves-light" do %>
+    <%= link to: topic_path(@conn, :new), class: "btn-floating btn-large waves-effect waves-light red" do %>
         <i class="material-icons">add</i>
     <%= end %>
 </div>
