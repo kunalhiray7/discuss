@@ -25,7 +25,10 @@ defmodule Discuss.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", Discuss do
-  #   pipe_through :api
-  # end
+   scope "/auth", Discuss do
+     pipe_through :api
+
+     get "/:provider", AuthController, :request
+     get "/:provider/callback", AuthController, :callback
+   end
 end
