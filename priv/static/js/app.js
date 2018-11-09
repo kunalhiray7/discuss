@@ -1670,14 +1670,12 @@ require.register("web/static/js/app.js", function(exports, require, module) {
 
 require("phoenix_html");
 
+require("./socket");
+
 });
 
 require.register("web/static/js/socket.js", function(exports, require, module) {
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
 var _phoenix = require("phoenix");
 
@@ -1736,14 +1734,43 @@ var socket = new _phoenix.Socket("/socket", { params: { token: window.userToken 
 socket.connect();
 
 // Now that you are connected, you can join channels with a topic:
-var channel = socket.channel("topic:subtopic", {});
-channel.join().receive("ok", function (resp) {
-  console.log("Joined successfully", resp);
-}).receive("error", function (resp) {
-  console.log("Unable to join", resp);
-});
+var createSocket = function createSocket(topicId) {
+    var channel = socket.channel("comments:" + topicId, {});
+    channel.join().receive("ok", function (resp) {
+        renderComments(resp.comments);
+    }).receive("error", function (resp) {
+        console.log("Unable to join", resp);
+    });
 
-exports.default = socket;
+    channel.on("comments:" + topicId + ":new", renderComment);
+
+    document.querySelector('button').addEventListener('click', function () {
+        var content = document.querySelector('textarea').value;
+
+        channel.push('comment:add', { content: content });
+    });
+};
+
+function renderComments(comments) {
+
+    var renderedComments = comments.map(function (comment) {
+        return commentTemplate(comment);
+    });
+
+    document.querySelector('.collection').innerHTML = renderedComments.join('');
+}
+
+function renderComment(event) {
+    var renderedComment = commentTemplate(event.comment);
+
+    document.querySelector('.collection').innerHTML += renderedComment;
+}
+
+function commentTemplate(comment) {
+    return "<li class=\"collection-item\">" + comment.content + "</li>";
+}
+
+window.createSocket = createSocket;
 
 });
 
