@@ -1767,7 +1767,11 @@ function renderComment(event) {
 }
 
 function commentTemplate(comment) {
-    return "<li class=\"collection-item\">" + comment.content + "</li>";
+    var email = "Anonymous";
+    if (comment.user) {
+        email = comment.user.email;
+    }
+    return "<li class=\"collection-item\">\n                " + comment.content + "\n                <div class=\"secondary-content\">\n                    " + email + "\n                </div>\n            </li>";
 }
 
 window.createSocket = createSocket;
